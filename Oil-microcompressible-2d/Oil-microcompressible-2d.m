@@ -23,7 +23,7 @@ B0 = 1.1;
 c_phi = 1e-7;       % 地层压缩系数
 c = 1e-9;           % 流体压缩系数
 
-nt = 60*24*20;
+nt = 60*24*2;
 dt = 60;
 
 % number the grids
@@ -49,6 +49,8 @@ p_grid = zeros(ny,nx,nt);
 p_grid(:,:,1) = reshape(p(:,1),ny,nx);
 
 for t = 1:nt
+    %u(:,t) = (2*10^(-5)*p(:,t)+0.8)*1E-3;      % viscosity
+%     u(:,t) = interp1(p_mu,mu,p(:,t),'linear')   ;  % viscosity
     B(:,t) = B0./(1 + c_phi.*(p(:,t)-p0));   % fluid volume index
     por(:,t) = por0.*(1 + c_phi.*(p(:,t) - p0));
     T(:,t) = dz*beta_c*kx./u(:,t)./B(:,t);
@@ -62,9 +64,9 @@ for t = 1:nt
     
     for i = 1:nx
         for j = 1:ny
-            if p(Grid(i,j),t) &gt;= 4000*6894.76 &amp;&amp; p(Grid(i,j),t) &lt;= 8000*6894.76
+            if p(Grid(i,j),t) >= 4000*6894.76 && p(Grid(i,j),t) <= 8000*6894.76
                 u(Grid(i,j),t) = interp1(p_mu,mu,p(Grid(i,j),t),'linear')   ;  % viscosity
-            elseif p(Grid(i,j),t) &lt; 4000*6894.76
+            elseif p(Grid(i,j),t) < 4000*6894.76
                 u(Grid(i,j),t) = 0.91*1E-3;
             else
                 u(Grid(i,j),t) = 1.0019*1E-3;
